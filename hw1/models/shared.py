@@ -11,12 +11,15 @@ def register_model(modelclass):
     """registers models in the hopper model registry"""
     if modelclass.name in MODEL_REGISTRY:
         raise ValueError("Cannot add model with name {}, as it already has been registered".format(modelclass.name))
+    if modelclass.name is None:
+        raise ValueError("Must set the name for the model")
     MODEL_REGISTRY[modelclass.name] = modelclass
 
 
 class ClonedModel(object):
     """Simple class to clone the behavior of the Hopper-v1 model"""
     __metaclass__ = abc.ABCMeta
+    name = None
 
     def __init__(self, pickle_file):
         """Load the pickle and store the observation mean and standard deviations"""
@@ -32,11 +35,6 @@ class ClonedModel(object):
     def normalize(self, observations):
         """normalizes the observations over prior knowledge of the mean and standard deviation"""
         return (observations - self._obs_mean) / self._obs_std
-
-    @property
-    @abc.abstractclassmethod
-    def name(self):
-        """A unique identifier for the model, to be added to the model registry"""
 
     @property
     @abc.abstractmethod

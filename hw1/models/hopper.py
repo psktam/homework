@@ -8,12 +8,7 @@ from .shared import register_model, ClonedModel
 @register_model
 class CheatingModel(ClonedModel):
     """cheating solution, wherein I just recreate the exact structure of the expert policy"""
-
-    @property
-    @classmethod
-    def name(self):
-        """gives name of this model"""
-        return 'cheating_hopper'
+    name = 'cheating_hopper'
 
     @property
     def loss_function(self):
@@ -38,5 +33,5 @@ class CheatingModel(ClonedModel):
         # Hm, cost is interesting. Should this be a class-specific thing, or should that be something to decide when
         # optimizing? I'm going to go with the former for now.
         actions = tf.placeholder(dtype=np.float64, shape=(None, self._action_dim), name='actions')
-        cost = tf.nn.l2_loss(actions - feed_forward)
-        return cost
+        cost = tf.losses.absolute_difference(labels=actions, predictions=feed_forward)
+        return cost, {'observations': observations, 'actions': actions}

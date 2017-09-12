@@ -44,7 +44,7 @@ class CheatingModel(ClonedModel):
         # Hm, cost is interesting. Should this be a class-specific thing, or should that be something to decide when
         # optimizing? I'm going to go with the former for now.
 
-        cost = tf.losses.absolute_difference(labels=self.varname_map['actions'], predictions=feed_forward)
+        cost = tf.nn.l2_loss(self.varname_map['actions'] - feed_forward)
         return cost
 
     def save_variables(self, session):

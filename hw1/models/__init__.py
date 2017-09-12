@@ -2,3 +2,4 @@
 from .shared import MODEL_REGISTRY
 
 from . import hopper
+from . import ant
